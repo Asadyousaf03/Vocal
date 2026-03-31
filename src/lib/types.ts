@@ -15,7 +15,7 @@ export const leadCreateSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^(\+44|0)\d{9,10}$/, "Use a valid UK phone number"),
+    .regex(/^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/, "Use a valid UK or Pakistan phone number"),
   source: leadSourceEnum.default("outbound"),
   status: leadStatusEnum.default("new"),
   leadStrength: leadStrengthEnum,
@@ -43,7 +43,7 @@ export const outboundTriggerSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^(\+44|0)\d{9,10}$/, "Use a valid UK phone number"),
+    .regex(/^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/, "Use a valid UK or Pakistan phone number"),
   leadStrength: leadStrengthEnum,
   comment: z.string().trim().min(3, "Comment is required"),
   followUpAt: z.string().datetime({ offset: true }),

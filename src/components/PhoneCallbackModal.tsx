@@ -27,7 +27,10 @@ export default function PhoneCallbackModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "ok" | "error"; message: string } | null>(null);
 
-  const validPhone = useMemo(() => /^(\+44|0)\d{9,10}$/.test(phone.trim()), [phone]);
+  const validPhone = useMemo(
+    () => /^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/.test(phone.trim()),
+    [phone],
+  );
 
   if (!open) {
     return null;
@@ -47,7 +50,10 @@ export default function PhoneCallbackModal({
     setFeedback(null);
 
     if (!validPhone) {
-      setFeedback({ type: "error", message: "Enter a valid UK phone number (+44... or 0...)." });
+      setFeedback({
+        type: "error",
+        message: "Enter a valid UK or Pakistan number (+447..., 07..., +92..., or 92...).",
+      });
       return;
     }
 

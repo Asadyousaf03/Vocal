@@ -10,12 +10,20 @@ export const leadStatusEnum = z.enum([
   "failed",
 ]);
 
-export const leadCreateSchema = z.object({
-  name: z.string().trim().min(2, "Name is required"),
-  phone: z
+const phoneSchema = z.preprocess(
+  (value) =>
+    typeof value === "string"
+      ? value.replace(/[\s()-]/g, "")
+      : value,
+  z
     .string()
     .trim()
     .regex(/^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/, "Use a valid UK or Pakistan phone number"),
+);
+
+export const leadCreateSchema = z.object({
+  name: z.string().trim().min(2, "Name is required"),
+  phone: phoneSchema,
   source: leadSourceEnum.default("outbound"),
   status: leadStatusEnum.default("new"),
   leadStrength: leadStrengthEnum,
@@ -40,10 +48,7 @@ export const callEventSchema = z.object({
 
 export const outboundTriggerSchema = z.object({
   name: z.string().trim().min(2, "Name is required"),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/, "Use a valid UK or Pakistan phone number"),
+  phone: phoneSchema,
   leadStrength: leadStrengthEnum,
   comment: z.string().trim().min(3, "Comment is required"),
   followUpAt: z.string().datetime({ offset: true }),

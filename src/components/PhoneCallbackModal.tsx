@@ -14,6 +14,10 @@ function toLocalDateTimeInputValue(date: Date) {
   return format(date, "yyyy-MM-dd'T'HH:mm");
 }
 
+function normalizePhoneInput(value: string) {
+  return value.replace(/[\s()-]/g, "").trim();
+}
+
 export default function PhoneCallbackModal({
   open,
   onClose,
@@ -28,7 +32,7 @@ export default function PhoneCallbackModal({
   const [feedback, setFeedback] = useState<{ type: "ok" | "error"; message: string } | null>(null);
 
   const validPhone = useMemo(
-    () => /^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/.test(phone.trim()),
+    () => /^(?:\+447\d{9}|07\d{9}|\+?92\d{10})$/.test(normalizePhoneInput(phone)),
     [phone],
   );
 
@@ -75,7 +79,7 @@ export default function PhoneCallbackModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          phone,
+          phone: normalizePhoneInput(phone),
           leadStrength,
           comment,
           followUpAt: new Date(followUpAt).toISOString(),

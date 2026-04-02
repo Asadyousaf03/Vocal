@@ -5,6 +5,7 @@ const requiredServerEnv = [
   "NEXT_PUBLIC_VAPI_PUBLIC_KEY",
   "NEXT_PUBLIC_VAPI_ASSISTANT_ID",
   "MAKE_COM_WEBHOOK_URL",
+  "OUTBOUND_STATUS_WEBHOOK_SECRET",
 ] as const;
 
 export function validateServerEnv() {

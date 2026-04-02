@@ -63,6 +63,7 @@ A Next.js App Router dashboard for MARKIA Ltd that demonstrates an AI Voice Nego
 - `POST /api/leads` create lead
 - `PATCH /api/leads/:id` update lead status/strength/comment/follow-up
 - `POST /api/outbound-call` create outbound lead + trigger Make
+- `POST /api/outbound-status` secure callback endpoint for Make/Twilio/Vapi status updates
 - `POST /api/call-events` append event timeline entries
 
 ## Development notes

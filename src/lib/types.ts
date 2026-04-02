@@ -5,6 +5,7 @@ export const leadSourceEnum = z.enum(["web_call", "outbound"]);
 export const leadStatusEnum = z.enum([
   "new",
   "callback_requested",
+  "ringing",
   "calling",
   "completed",
   "failed",
@@ -46,6 +47,15 @@ export const callEventSchema = z.object({
   payload: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
+export const outboundStatusSchema = z.object({
+  leadId: z.string().uuid(),
+  status: leadStatusEnum,
+  comment: z.string().trim().min(2).optional(),
+  callDurationSec: z.number().int().nonnegative().optional(),
+  eventType: z.string().trim().min(2).default("provider_status_update"),
+  payload: z.record(z.string(), z.unknown()).optional().default({}),
+});
+
 export const outboundTriggerSchema = z.object({
   name: z.string().trim().min(2, "Name is required"),
   phone: phoneSchema,
@@ -63,7 +73,7 @@ export type LeadRow = {
   name: string;
   phone: string;
   source: "web_call" | "outbound";
-  status: "new" | "callback_requested" | "calling" | "completed" | "failed";
+  status: "new" | "callback_requested" | "ringing" | "calling" | "completed" | "failed";
   lead_strength: "weak" | "medium" | "strong";
   comment: string;
   follow_up_at: string;

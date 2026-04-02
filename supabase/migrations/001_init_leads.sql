@@ -5,7 +5,7 @@ create table if not exists public.leads (
   name text not null,
   phone text not null,
   source text not null check (source in ('web_call', 'outbound')),
-  status text not null default 'new' check (status in ('new', 'callback_requested', 'calling', 'completed', 'failed')),
+  status text not null default 'new' check (status in ('new', 'callback_requested', 'ringing', 'calling', 'completed', 'failed')),
   lead_strength text not null default 'medium' check (lead_strength in ('weak', 'medium', 'strong')),
   comment text not null,
   follow_up_at timestamptz not null,

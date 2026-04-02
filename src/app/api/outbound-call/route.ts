@@ -20,6 +20,8 @@ export async function POST(request: Request) {
 
   const input = parsed.data;
   const supabase = getSupabaseServerClient();
+  const origin = request.headers.get("origin") ?? "";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? origin;
 
   const { data: lead, error: leadError } = await supabase
     .from("leads")
@@ -50,6 +52,10 @@ export async function POST(request: Request) {
     comment: input.comment,
     followUpAt: input.followUpAt,
     source: "apex-leads-dashboard",
+    provider: "vapi",
+    vapiAssistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID,
+    statusCallbackUrl: `${baseUrl}/api/outbound-status`,
+    statusCallbackAuth: process.env.OUTBOUND_STATUS_WEBHOOK_SECRET,
   };
 
   const makeResponse = await fetch(process.env.MAKE_COM_WEBHOOK_URL!, {
@@ -84,7 +90,7 @@ export async function POST(request: Request) {
     );
   }
 
-  await supabase.from("leads").update({ status: "calling" }).eq("id", lead.id);
+  await supabase.from("leads").update({ status: "ringing" }).eq("id", lead.id);
 
   return NextResponse.json({
     ok: true,

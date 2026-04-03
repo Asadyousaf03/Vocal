@@ -16,7 +16,7 @@ export default function VapiButton({
   onRefresh,
 }: VapiButtonProps) {
   const vapiRef = useRef<{
-    start: (assistant: string) => Promise<void>;
+    start: (assistant: string, overrides?: Record<string, unknown>) => Promise<void>;
     stop: () => Promise<void>;
     on: (event: string, callback: (payload?: unknown) => void) => void;
   } | null>(null);
@@ -37,12 +37,12 @@ export default function VapiButton({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: "Web Demo Lead",
-        phone: "+447000000001",
+        name: "Test Web Call",
+        phone: "+923100403832",
         source: "web_call",
         status: "calling",
         leadStrength: "medium",
-        comment: "Web demo call initiated.",
+        comment: "Direct in-browser web call test.",
         followUpAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
       }),
     });
@@ -75,7 +75,7 @@ export default function VapiButton({
 
       if (!vapiRef.current) {
         const instance = new Vapi(publicKey) as unknown as {
-          start: (assistant: string) => Promise<void>;
+          start: (assistant: string, overrides?: Record<string, unknown>) => Promise<void>;
           stop: () => Promise<void>;
           on: (event: string, callback: (payload?: unknown) => void) => void;
         };
@@ -105,7 +105,13 @@ export default function VapiButton({
         });
       }
 
-      await vapiRef.current.start(assistantId);
+      await vapiRef.current.start(assistantId, {
+        variableValues: {
+          name: "Test Caller",
+          phone: "+923100403832",
+          comment: "Testing the AI directly through the computer microphone.",
+        },
+      });
     } catch (error) {
       setStatus("error");
       setErrorMessage(error instanceof Error ? error.message : "Unable to start call");
@@ -129,7 +135,7 @@ export default function VapiButton({
         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--apex-blue)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--apex-blue-700)] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "in_call" ? <PhoneOff className="h-4 w-4" /> : <PhoneCall className="h-4 w-4" />}
-        {status === "in_call" ? "End Web Call" : "Talk to Oliver (Web Demo)"}
+        {status === "in_call" ? "End Web Call" : "Talk via Web Call (Microphone)"}
       </button>
 
       <p className="text-xs text-slate-600">
